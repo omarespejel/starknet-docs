@@ -54,11 +54,5 @@ reviews:
           If llms.txt is changed, scripts/validate_llms_txt.py or equivalent
           validation behavior must remain present and runnable in CI.
 
-tools:
-  opengrep:
-    enabled: true
-  trufflehog:
-    enabled: true
-
 chat:
   auto_reply: true
