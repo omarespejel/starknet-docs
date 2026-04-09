@@ -1,0 +1,47 @@
+{
+  "reviewProfile": "security-focused",
+  "strictness": 2,
+  "triggerOnUpdates": true,
+  "statusCheck": true,
+  "statusCommentsEnabled": true,
+  "shouldUpdateDescription": false,
+  "updateExistingSummaryComment": true,
+  "fixWithAI": true,
+  "focus": [
+    "security",
+    "architecture",
+    "correctness"
+  ],
+  "instructions": "Prioritize production correctness over style. For this docs repo, focus on link integrity, canonical URL usage, discoverability artifacts (llms.txt, llms-full.txt, sitemap), and CI safety. Flag stale/broken links, duplicated low-signal sections, and weak validation that allows malformed llms.txt to pass.",
+  "paths": {
+    "include": [
+      "llms.txt",
+      "scripts/**",
+      ".github/workflows/**",
+      "docs.json"
+    ]
+  },
+  "ignorePatterns": "**/*.generated.*\n**/node_modules/**\n**/dist/**\n**/.next/**\n**/coverage/**\n*.lock",
+  "customContext": {
+    "rules": [
+      {
+        "scope": [
+          "llms.txt"
+        ],
+        "rule": "Ensure high-signal curation: no duplicated URLs, no dead links, no broad unstructured dumping of low-value pages."
+      },
+      {
+        "scope": [
+          "scripts/validate_llms_txt.py"
+        ],
+        "rule": "Validator must fail closed on malformed input and must verify URL format, section structure, and local path mapping."
+      },
+      {
+        "scope": [
+          ".github/workflows/**"
+        ],
+        "rule": "Workflows must use least-privilege permissions and avoid unsafe action pinning practices."
+      }
+    ]
+  }
+}

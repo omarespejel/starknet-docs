@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "en-US"
+early_access: false
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: true
+  high_level_summary: true
+  review_status: true
+  review_details: true
+  collapse_walkthrough: false
+  changed_files_summary: true
+  poem: false
+  fail_commit_status: true
+
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    auto_pause_after_reviewed_commits: 0
+
+  path_instructions:
+    - path: "llms.txt"
+      instructions: >
+        Treat this file as production retrieval surface for agentic search.
+        Verify links are canonical and stable, section ordering is logical,
+        and descriptions are concise/high-signal. Flag duplicates, stale entries,
+        or low-signal bulk listing behavior.
+    - path: "scripts/validate_llms_txt.py"
+      instructions: >
+        Validate correctness, determinism, and strict failure behavior.
+        Ensure no false negatives for malformed llms.txt and no unsafe assumptions
+        about URL shape or local path mapping.
+    - path: ".github/workflows/**"
+      instructions: >
+        Verify least-privilege permissions and safe CI patterns.
+        Flag unpinned actions, unnecessary write permissions,
+        and bypassable checks.
+    - path: "docs.json"
+      instructions: >
+        Confirm configuration changes do not reduce docs discoverability
+        or break llms artifacts, sitemap exposure, and navigation consistency.
+
+  pre_merge_checks:
+    custom_checks:
+      - name: "LLMS link quality declaration"
+        mode: "warning"
+        instructions: >
+          For changes to llms.txt, PR description should include:
+          why links were added/removed and expected retrieval impact.
+      - name: "Validation coverage gate"
+        mode: "error"
+        instructions: >
+          If llms.txt is changed, scripts/validate_llms_txt.py or equivalent
+          validation behavior must remain present and runnable in CI.
+
+chat:
+  auto_reply: true
